@@ -129,10 +129,56 @@ export class FlightRepository {
     });
   }
 
-  async findByFlightNumber(flightNumber: string) {
-    return prisma.flight.findUnique({
-      where: { flightNumber: flightNumber.trim().toUpperCase() },
+  async findByFlightNumber(rawFlightNumber: string) {
+    if (!rawFlightNumber || !rawFlightNumber.trim()) return null;
+
+    const raw = rawFlightNumber.trim().toUpperCase();
+
+    // 1. Direct exact search: e.g. "AV-200"
+    let flight = await prisma.flight.findUnique({
+      where: { flightNumber: raw },
     });
+    if (flight) return flight;
+
+    // 2. Normalization for missing hyphens or spaces: e.g. "AV200" -> "AV-200", "AV 200" -> "AV-200"
+    const autoHyphen = raw.replace(/\s+/g, '-').replace(/^([A-Z]{2})(\d+)$/, '$1-$2');
+    flight = await prisma.flight.findUnique({
+      where: { flightNumber: autoHyphen },
+    });
+    if (flight) return flight;
+
+    // 3. Airline name replacement: e.g. "AVIANCA 200" -> "AV-200", "LATAM 201" -> "LA-201"
+    const airlinePrefixMap: Record<string, string> = {
+      AVIANCA: 'AV',
+      LATAM: 'LA',
+      WINGO: 'WN',
+      CLIC: 'CL',
+      SATENA: 'SA',
+    };
+
+    for (const [name, prefix] of Object.entries(airlinePrefixMap)) {
+      if (raw.includes(name)) {
+        const digits = raw.replace(/\D/g, '');
+        if (digits) {
+          flight = await prisma.flight.findUnique({
+            where: { flightNumber: `${prefix}-${digits}` },
+          });
+          if (flight) return flight;
+        }
+      }
+    }
+
+    // 4. Fallback: Search containing the number or substring
+    const match = await prisma.flight.findFirst({
+      where: {
+        OR: [
+          { flightNumber: { contains: raw } },
+          { flightNumber: { contains: autoHyphen } },
+        ],
+      },
+    });
+
+    return match;
   }
 
   async decrementSeats(flightId: string, count: number) {

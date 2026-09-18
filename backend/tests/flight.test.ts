@@ -106,8 +106,17 @@ describe('Flight Queries, Schedules & Tariffs API (R1, R5, R6)', () => {
     expect(['ON_TIME', 'DELAYED', 'BOARDING', 'CANCELLED']).toContain(res.body.data.status);
   });
 
-  it('GET /api/flights/status/INVALID-999 should return 404', async () => {
-    const res = await request(app).get('/api/flights/status/INVALID-999');
+  it('GET /api/flights/status should normalize flight numbers without hyphen (e.g. AV200)', async () => {
+    const cleanNumber = sampleFlightNumber.replace('-', '');
+    const res = await request(app).get(`/api/flights/status/${cleanNumber}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.flightNumber).toBe(sampleFlightNumber);
+  });
+
+  it('GET /api/flights/status/INVALID-9999 should return 404', async () => {
+    const res = await request(app).get('/api/flights/status/INVALID-9999');
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);

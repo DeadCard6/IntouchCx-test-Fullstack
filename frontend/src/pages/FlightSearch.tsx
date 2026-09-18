@@ -6,6 +6,8 @@ import {
   ArrowRight,
   Filter,
   RotateCcw,
+  CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import { ApiService } from '../services/api.js';
 import { Flight } from '../types/index.js';
@@ -110,21 +112,26 @@ export const FlightSearch: React.FC = () => {
     ApiService.searchFlights(newParams).then((res) => setFlights(res.data));
   };
 
-  const handleSearchStatus = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!statusSearchQuery.trim()) return;
+  const handleLookupStatus = async (flightNum: string) => {
+    if (!flightNum.trim()) return;
+    setStatusSearchQuery(flightNum.trim());
     setStatusLoading(true);
     setStatusError(null);
     setFlightStatusResult(null);
 
     try {
-      const res = await ApiService.getFlightStatus(statusSearchQuery.trim());
+      const res = await ApiService.getFlightStatus(flightNum.trim());
       setFlightStatusResult(res.data);
     } catch (err: any) {
-      setStatusError(err.message || 'No se encontro vuelo con ese numero');
+      setStatusError(err.message || `No se encontro vuelo con el identificador "${flightNum}"`);
     } finally {
       setStatusLoading(false);
     }
+  };
+
+  const handleSearchStatus = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleLookupStatus(statusSearchQuery);
   };
 
   const handleReserve = (flight: Flight) => {
@@ -194,58 +201,131 @@ export const FlightSearch: React.FC = () => {
 
       {/* Flight Status Lookup Card (R6) */}
       <div
+        id="flight-status-panel"
         className="glass-card"
         style={{
-          padding: '20px 24px',
+          padding: '24px',
           marginBottom: '28px',
           backgroundColor: 'rgba(6, 182, 212, 0.05)',
-          borderColor: 'rgba(6, 182, 212, 0.2)',
+          borderColor: 'rgba(6, 182, 212, 0.25)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: 'var(--accent-cyan)', fontWeight: 700 }}>
-          <Clock size={20} />
-          <span>Consultar Estado de un Vuelo Especifico (R6)</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)', fontWeight: 700 }}>
+            <Clock size={20} />
+            <span style={{ fontSize: '1.05rem' }}>Consultar Estado de un Vuelo Especifico (R6)</span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            <span>Ejemplos:</span>
+            <button
+              type="button"
+              onClick={() => handleLookupStatus('AV-200')}
+              className="badge"
+              style={{ background: 'rgba(255,255,255,0.08)', cursor: 'pointer', border: '1px solid var(--border-glass)', color: 'var(--text-primary)' }}
+            >
+              AV-200
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLookupStatus('LA-202')}
+              className="badge"
+              style={{ background: 'rgba(255,255,255,0.08)', cursor: 'pointer', border: '1px solid var(--border-glass)', color: 'var(--text-primary)' }}
+            >
+              LA-202
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLookupStatus('WN-204')}
+              className="badge"
+              style={{ background: 'rgba(255,255,255,0.08)', cursor: 'pointer', border: '1px solid var(--border-glass)', color: 'var(--text-primary)' }}
+            >
+              WN-204
+            </button>
+          </div>
         </div>
+
         <form onSubmit={handleSearchStatus} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <input
             id="status-flight-number-input"
             type="text"
             className="form-input"
-            placeholder="Ej: AV-200, LA-202, WN-204, CL-206, SA-208..."
+            placeholder="Ingresa el numero de vuelo (ej: AV-200, LA202, WN 204, o digitos)..."
             value={statusSearchQuery}
             onChange={(e) => setStatusSearchQuery(e.target.value)}
-            style={{ flex: '1', minWidth: '220px' }}
+            style={{ flex: '1', minWidth: '260px' }}
           />
-          <button id="status-search-btn" type="submit" disabled={statusLoading} className="btn-secondary">
+          <button id="status-search-btn" type="submit" disabled={statusLoading} className="btn-primary" style={{ padding: '10px 22px' }}>
             {statusLoading ? 'Consultando...' : 'Consultar Estado'}
           </button>
         </form>
 
         {statusError && (
-          <div style={{ marginTop: '12px', color: '#f87171', fontSize: '0.875rem' }}>
-            [AVISO] {statusError}
+          <div style={{ marginTop: '14px', color: '#f87171', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <AlertTriangle size={16} />
+            <span>[AVISO] {statusError}</span>
           </div>
         )}
 
         {flightStatusResult && (
           <div
-            className="glass-panel"
-            style={{ marginTop: '16px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}
+            className="glass-panel animate-fade-in"
+            style={{
+              marginTop: '18px',
+              padding: '20px',
+              border: '1px solid rgba(6, 182, 212, 0.35)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '16px',
+              alignItems: 'center',
+            }}
           >
             <div>
-              <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>
-                {flightStatusResult.airline} - {flightStatusResult.flightNumber}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#ffffff' }}>
+                  {flightStatusResult.airline}
+                </span>
+                <span className="badge" style={{ backgroundColor: 'rgba(6, 182, 212, 0.2)', color: 'var(--accent-cyan)' }}>
+                  {flightStatusResult.flightNumber}
+                </span>
               </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                Ruta: {flightStatusResult.origin} a {flightStatusResult.destination} | Avion: {flightStatusResult.aircraftModel}
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                {flightStatusResult.aircraftModel} | {flightStatusResult.availableSeats} asientos disponibles
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span className={`badge ${flightStatusResult.status === 'ON_TIME' ? 'badge-success' : 'badge-warning'}`}>
+
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#ffffff' }}>
+                {flightStatusResult.origin} a {flightStatusResult.destination}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Salida: {new Date(flightStatusResult.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {' - '}Llegada: {new Date(flightStatusResult.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <span
+                className={`badge ${flightStatusResult.status === 'ON_TIME' ? 'badge-success' : 'badge-warning'}`}
+                style={{ fontSize: '0.85rem', padding: '6px 14px' }}
+              >
                 {flightStatusResult.status === 'ON_TIME' ? 'EN HORA' : 'DEMORADO'}
               </span>
-              <button onClick={() => handleReserve(flightStatusResult)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
-                Reservar este vuelo
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                {flightStatusResult.isDirect ? 'Vuelo Directo' : flightStatusResult.stopsInfo || 'Con Escala'}
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
+                ${flightStatusResult.price.toLocaleString('es-CO')} COP
+              </div>
+              <button
+                onClick={() => handleReserve(flightStatusResult)}
+                className="btn-primary"
+                style={{ padding: '6px 16px', fontSize: '0.85rem' }}
+              >
+                Reservar Vuelo <ArrowRight size={14} />
               </button>
             </div>
           </div>
@@ -363,7 +443,7 @@ export const FlightSearch: React.FC = () => {
             Vuelos Disponibles ({flights.length})
           </h2>
           <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-            Acceso a reserva en 1 solo clic
+            Tip: Haz clic en el codigo del vuelo (ej: AV-200) para ver su estado arriba
           </div>
         </div>
 
@@ -414,9 +494,20 @@ export const FlightSearch: React.FC = () => {
                       <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#ffffff' }}>
                         {flight.airline}
                       </span>
-                      <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleLookupStatus(flight.flightNumber)}
+                        className="badge"
+                        title="Clic para consultar estado de este vuelo"
+                        style={{
+                          backgroundColor: 'rgba(6, 182, 212, 0.15)',
+                          color: 'var(--accent-cyan)',
+                          border: '1px solid rgba(6, 182, 212, 0.3)',
+                          cursor: 'pointer',
+                        }}
+                      >
                         {flight.flightNumber}
-                      </span>
+                      </button>
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                       {flight.aircraftModel} - {flight.availableSeats} asientos disp.
