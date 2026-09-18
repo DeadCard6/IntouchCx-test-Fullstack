@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding...');
+  console.log('[INFO] Starting database seeding...');
 
   // 1. Create a default demo user
   const hashedPassword = await bcrypt.hash('Password123!', 10);
@@ -14,7 +14,7 @@ async function main() {
     create: {
       email: 'demo@intouchcx.com',
       password: hashedPassword,
-      fullName: 'Juan Pérez (Demo)',
+      fullName: 'Juan Perez (Demo)',
       phoneNumber: '+57 300 123 4567',
       savedCardNumber: '4532********8888',
       savedCardHolder: 'JUAN PEREZ',
@@ -22,7 +22,7 @@ async function main() {
     },
   });
 
-  console.log(`👤 Demo user created/verified: ${user.email}`);
+  console.log(`[USER] Demo user created/verified: ${user.email}`);
 
   // 2. Flight schedules and routes
   const routes = [
@@ -100,7 +100,7 @@ async function main() {
           status: 'ON_TIME',
           isDirect: !isStopover,
           stopsCount: isStopover ? 1 : 0,
-          stopsInfo: isStopover ? '1 Escala en Medellín (MDE) - 1h 10m' : null,
+          stopsInfo: isStopover ? '1 Escala en Medellin (MDE) - 1h 10m' : null,
           availableSeats: 40 + (flightIndex % 20),
           totalSeats: 60,
           aircraftModel: 'Boeing 737-800',
@@ -109,12 +109,12 @@ async function main() {
     }
   }
 
-  console.log('✅ Database seeded with rich flight routes and initial demo user.');
+  console.log('[SUCCESS] Database seeded with rich flight routes and initial demo user.');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seeding failed:', e);
+    console.error('[ERROR] Seeding failed:', e);
     process.exit(1);
   })
   .finally(async () => {

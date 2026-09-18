@@ -4,7 +4,7 @@ import { createApp } from '../src/app.js';
 
 const app = createApp();
 
-describe('🏥 Health & Error Handlers API', () => {
+describe('Health & Error Handlers API', () => {
   it('GET /api/health should return 200 and OK status', async () => {
     const res = await request(app).get('/api/health');
 

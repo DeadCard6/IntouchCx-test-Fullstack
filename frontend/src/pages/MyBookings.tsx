@@ -38,7 +38,7 @@ export const MyBookings: React.FC = () => {
       <div style={{ marginBottom: '28px' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '6px' }}>Mis Reservas y Billetes</h1>
         <p style={{ color: 'var(--text-secondary)' }}>
-          Historial de vuelos reservados y billetes aéreos emitidos
+          Historial de vuelos reservados y billetes aereos emitidos
         </p>
       </div>
 
@@ -53,9 +53,9 @@ export const MyBookings: React.FC = () => {
       ) : bookings.length === 0 ? (
         <div className="glass-panel" style={{ padding: '48px 20px', textAlign: 'center' }}>
           <Plane size={48} color="var(--text-muted)" style={{ marginBottom: '16px' }} />
-          <h2 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Aún no tienes reservas activas</h2>
+          <h2 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Aun no tienes reservas activas</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem' }}>
-            Explora las rutas disponibles y adquiere tus billetes de manera rápida.
+            Explora las rutas disponibles y adquiere tus billetes de manera rapida.
           </p>
           <Link to="/flights" className="btn-primary" style={{ padding: '10px 24px' }}>
             Buscar Vuelos Ahora
@@ -85,10 +85,10 @@ export const MyBookings: React.FC = () => {
                   {b.passengers.map((p) => (
                     <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '0.9rem' }}>
                       <div>
-                        <strong>{p.fullName}</strong> ({p.documentNumber}) — Asiento: <code style={{ color: 'var(--accent-cyan)' }}>{p.seatNumber || 'N/A'}</code> ({p.seatClass})
+                        <strong>{p.fullName}</strong> ({p.documentNumber}) - Asiento: <code style={{ color: 'var(--accent-cyan)' }}>{p.seatNumber || 'N/A'}</code> ({p.seatClass})
                       </div>
                       <div style={{ color: 'var(--text-secondary)' }}>
-                        Vuelo {p.flight?.airline} {p.flight?.flightNumber}: {p.flight?.origin} ➔ {p.flight?.destination}
+                        Vuelo {p.flight?.airline} {p.flight?.flightNumber}: {p.flight?.origin} a {p.flight?.destination}
                       </div>
                     </div>
                   ))}
@@ -97,8 +97,8 @@ export const MyBookings: React.FC = () => {
                 {/* Footer details */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', borderTop: '1px solid var(--border-glass)', paddingTop: '14px' }}>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Fecha de creación: {new Date(b.createdAt).toLocaleDateString([], { dateStyle: 'medium' })}
-                    {b.paymentSimulation && ` • Transacción: ${b.paymentSimulation.transactionId}`}
+                    Fecha de creacion: {new Date(b.createdAt).toLocaleDateString([], { dateStyle: 'medium' })}
+                    {b.paymentSimulation && ` - Transaccion: ${b.paymentSimulation.transactionId}`}
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>

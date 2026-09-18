@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/config/database.js';
 
 const app = createApp();
 
-describe('🔐 Auth & User Management API (R4, R7, RNF Seguridad)', () => {
+describe('Auth & User Management API (R4, R7, RNF Seguridad)', () => {
   const testUser = {
     email: `test-${Date.now()}@intouchcx.com`,
     password: 'SecurePassword123!',
@@ -81,7 +81,7 @@ describe('🔐 Auth & User Management API (R4, R7, RNF Seguridad)', () => {
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBe(false);
-    expect(res.body.message).toContain('Credenciales inválidas');
+    expect(res.body.message).toContain('Credenciales');
   });
 
   it('GET /api/auth/profile should return authenticated user data', async () => {

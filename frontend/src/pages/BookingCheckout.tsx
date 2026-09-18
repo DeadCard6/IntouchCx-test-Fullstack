@@ -202,7 +202,7 @@ export const BookingCheckout: React.FC = () => {
               <span className="badge badge-success">{flight.flightNumber}</span>
             </div>
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              {flight.origin} ➔ {flight.destination} | Salida: {new Date(flight.departureTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+              {flight.origin} a {flight.destination} | Salida: {new Date(flight.departureTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
             </div>
           </div>
 
@@ -256,7 +256,7 @@ export const BookingCheckout: React.FC = () => {
           </div>
 
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '8px' }}>
-            ¡Compra de Billetes Aéreos Exitosa!
+            Compra de Billetes Aereos Exitosa
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto 24px auto' }}>
             {paymentSuccessData.message}
@@ -280,7 +280,7 @@ export const BookingCheckout: React.FC = () => {
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>ID Transacción Simulada:</span>
+              <span style={{ color: 'var(--text-muted)' }}>ID Transaccion Simulada:</span>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem' }}>
                 {paymentSuccessData.transactionId}
               </span>
@@ -288,7 +288,7 @@ export const BookingCheckout: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
               <span style={{ color: 'var(--text-muted)' }}>Entrega de Billetes:</span>
               <span style={{ fontWeight: 600 }}>
-                {paymentSuccessData.deliveryMethod === 'EMAIL' ? '📧 Envío al Correo Registrado' : '🏢 Mostrador del Aeropuerto'}
+                {paymentSuccessData.deliveryMethod === 'EMAIL' ? 'Envio al Correo Registrado' : 'Mostrador del Aeropuerto'}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-glass)', paddingTop: '12px' }}>
@@ -315,7 +315,7 @@ export const BookingCheckout: React.FC = () => {
             <div>
               <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>Paso 1: Datos de Pasajeros y Asientos</h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                Puedes reservar para uno o más pasajeros en un solo itinerario
+                Puedes reservar para uno o mas pasajeros en un solo itinerario
               </p>
             </div>
             <button
@@ -358,7 +358,7 @@ export const BookingCheckout: React.FC = () => {
                     type="text"
                     required
                     className="form-input"
-                    placeholder="Ej: Laura Gómez"
+                    placeholder="Ej: Laura Gomez"
                     value={passenger.fullName}
                     onChange={(e) => handlePassengerChange(index, 'fullName', e.target.value)}
                   />
@@ -383,7 +383,7 @@ export const BookingCheckout: React.FC = () => {
                     value={passenger.seatClass}
                     onChange={(e) => handlePassengerChange(index, 'seatClass', e.target.value as any)}
                   >
-                    <option value="ECONOMY">Económica (Tarifa base)</option>
+                    <option value="ECONOMY">Economica (Tarifa base)</option>
                     <option value="BUSINESS">Ejecutiva / Business (+60%)</option>
                     <option value="FIRST">Primera Clase (+120%)</option>
                   </select>
@@ -433,7 +433,7 @@ export const BookingCheckout: React.FC = () => {
         <form onSubmit={handleSimulatePayment} className="glass-panel animate-fade-in" style={{ padding: '32px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
             <div>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>Paso 2: Simulación de Compra de Billetes</h2>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>Paso 2: Simulacion de Compra de Billetes</h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
                 Reserva confirmada bajo el localizador: <strong style={{ color: 'var(--accent-cyan)' }}>{activeBooking.pnr}</strong>
               </p>
@@ -443,7 +443,7 @@ export const BookingCheckout: React.FC = () => {
             <InactivityTimer
               expiresAt={activeBooking.expiresAt}
               onExpire={() => {
-                alert('El tiempo de retención de 15 minutos ha expirado. Por favor genera una nueva reserva.');
+                alert('El tiempo de retencion de 15 minutos ha expirado. Por favor genera una nueva reserva.');
                 navigate('/flights');
               }}
             />
@@ -460,13 +460,13 @@ export const BookingCheckout: React.FC = () => {
               marginBottom: '24px',
             }}
           >
-            ℹ️ <strong>Simulación Segura:</strong> No se generará ningún cobro real a tu tarjeta de crédito. Puedes usar cualquier número de prueba.
+            <strong>Simulacion Segura:</strong> No se generara ningun cobro real a tu tarjeta de credito. Puedes usar cualquier numero de prueba.
           </div>
 
           {/* Card Form */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-              <label className="form-label">Número de Tarjeta de Crédito Simulada *</label>
+              <label className="form-label">Numero de Tarjeta de Credito Simulada *</label>
               <div style={{ position: 'relative' }}>
                 <input
                   id="checkout-card-number"
@@ -496,7 +496,7 @@ export const BookingCheckout: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Fecha de Expiración (MM/YY) *</label>
+              <label className="form-label">Fecha de Expiracion (MM/YY) *</label>
               <input
                 id="checkout-card-expiry"
                 type="text"
@@ -526,7 +526,7 @@ export const BookingCheckout: React.FC = () => {
           {/* Delivery Method Selection */}
           <div style={{ margin: '20px 0' }}>
             <label className="form-label" style={{ marginBottom: '8px', display: 'block' }}>
-              Modalidad de Recepción de Billetes:
+              Modalidad de Recepcion de Billetes:
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <label
@@ -550,8 +550,8 @@ export const BookingCheckout: React.FC = () => {
                 />
                 <Mail size={18} color="var(--accent-cyan)" />
                 <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>Envío al Correo (R9)</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmación digital inmediata</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>Envio al Correo (R9)</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmacion digital inmediata</div>
                 </div>
               </label>
 
@@ -606,7 +606,7 @@ export const BookingCheckout: React.FC = () => {
 
             <button id="submit-payment-btn" type="submit" disabled={paying} className="btn-primary" style={{ padding: '12px 32px' }}>
               <ShieldCheck size={18} />
-              {paying ? 'Procesando simulación...' : 'Comprar Billetes (Simulación)'}
+              {paying ? 'Procesando simulacion...' : 'Comprar Billetes (Simulacion)'}
             </button>
           </div>
         </form>

@@ -5,9 +5,9 @@ const app = createApp();
 
 app.listen(env.PORT, () => {
   console.log(`=========================================`);
-  console.log(`🚀 Flight Reservation Backend Running`);
-  console.log(`📡 URL: http://localhost:${env.PORT}`);
-  console.log(`🏥 Health Check: http://localhost:${env.PORT}/api/health`);
-  console.log(`🌐 Environment: ${env.NODE_ENV}`);
+  console.log(`[INFO] Flight Reservation Backend Running`);
+  console.log(`[URL] http://localhost:${env.PORT}`);
+  console.log(`[HEALTH] http://localhost:${env.PORT}/api/health`);
+  console.log(`[ENV] ${env.NODE_ENV}`);
   console.log(`=========================================`);
 });

@@ -4,7 +4,7 @@ import { createApp } from '../src/app.js';
 
 const app = createApp();
 
-describe('✈️ Flight Queries, Schedules & Tariffs API (R1, R5, R6)', () => {
+describe('Flight Queries, Schedules & Tariffs API (R1, R5, R6)', () => {
   let sampleFlightId: string;
   let sampleFlightNumber: string;
 

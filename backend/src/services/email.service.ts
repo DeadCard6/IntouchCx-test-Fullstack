@@ -8,12 +8,12 @@ export class EmailService {
     total: number;
   }) {
     console.log('----------------------------------------------------');
-    console.log('📧 [SIMULACIÓN DE ENVÍO DE CORREO ELECTRÓNICO (R9)]');
+    console.log('[SIMULACION DE ENVIO DE CORREO ELECTRONICO (R9)]');
     console.log(`Para: ${data.to}`);
-    console.log(`Asunto: ¡Confirmación de compra de billetes aéreos - Localizador ${data.pnr}!`);
+    console.log(`Asunto: Confirmacion de compra de billetes aereos - Localizador ${data.pnr}`);
     console.log(`Estimado/a ${data.userName},`);
     console.log(`Su compra ha sido procesada exitosamente.`);
-    console.log(`Código de Reserva (PNR): ${data.pnr}`);
+    console.log(`Codigo de Reserva (PNR): ${data.pnr}`);
     console.log(`Itinerario: ${data.flightDetails}`);
     console.log(`Pasajeros: ${data.passengers.join(', ')}`);
     console.log(`Monto Total: $${data.total.toLocaleString('es-CO')} COP`);

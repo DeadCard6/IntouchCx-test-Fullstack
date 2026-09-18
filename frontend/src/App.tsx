@@ -38,7 +38,7 @@ export const App: React.FC = () => {
               backgroundColor: 'rgba(11, 15, 25, 0.95)',
             }}
           >
-            © {new Date().getFullYear()} AeroIntouch — Sistema de Reserva de Vuelos (Prueba Técnica IntouchCX)
+            AeroIntouch - Sistema de Reserva de Vuelos (Prueba Tecnica IntouchCX)
           </footer>
         </div>
       </AuthProvider>

@@ -5,7 +5,7 @@ import { prisma } from '../src/config/database.js';
 
 const app = createApp();
 
-describe('🎫 Bookings, Multi-Passenger & Payment Simulation API (R2, R3, R8, R9)', () => {
+describe('Bookings, Multi-Passenger & Payment Simulation API (R2, R3, R8, R9)', () => {
   let authToken: string;
   let testUserId: string;
   let sampleFlight: any;

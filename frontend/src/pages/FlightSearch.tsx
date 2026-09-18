@@ -79,7 +79,7 @@ export const FlightSearch: React.FC = () => {
       const res = await ApiService.getFlightStatus(statusSearchQuery.trim());
       setFlightStatusResult(res.data);
     } catch (err: any) {
-      setStatusError(err.message || 'No se encontró vuelo con ese número');
+      setStatusError(err.message || 'No se encontro vuelo con ese numero');
     } finally {
       setStatusLoading(false);
     }
@@ -101,7 +101,7 @@ export const FlightSearch: React.FC = () => {
           Consulta y Reserva de Vuelos
         </h1>
         <p style={{ color: 'var(--text-secondary)' }}>
-          Horarios en tiempo real, comparación de tarifas y estado operativo de aeronaves
+          Horarios en tiempo real, comparacion de tarifas y estado operativo de aeronaves
         </p>
       </div>
 
@@ -117,7 +117,7 @@ export const FlightSearch: React.FC = () => {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: 'var(--accent-cyan)', fontWeight: 700 }}>
           <Clock size={20} />
-          <span>Consultar Estado de un Vuelo Específico (R6)</span>
+          <span>Consultar Estado de un Vuelo Especifico (R6)</span>
         </div>
         <form onSubmit={handleSearchStatus} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <input
@@ -136,7 +136,7 @@ export const FlightSearch: React.FC = () => {
 
         {statusError && (
           <div style={{ marginTop: '12px', color: '#f87171', fontSize: '0.875rem' }}>
-            ⚠️ {statusError}
+            [AVISO] {statusError}
           </div>
         )}
 
@@ -147,10 +147,10 @@ export const FlightSearch: React.FC = () => {
           >
             <div>
               <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>
-                {flightStatusResult.airline} — {flightStatusResult.flightNumber}
+                {flightStatusResult.airline} - {flightStatusResult.flightNumber}
               </div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                Ruta: {flightStatusResult.origin} ➔ {flightStatusResult.destination} | Avión: {flightStatusResult.aircraftModel}
+                Ruta: {flightStatusResult.origin} a {flightStatusResult.destination} | Avion: {flightStatusResult.aircraftModel}
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -170,7 +170,7 @@ export const FlightSearch: React.FC = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label" htmlFor="filter-origin">
-              Origen (Ciudad / Código)
+              Origen (Ciudad / Codigo)
             </label>
             <input
               id="filter-origin"
@@ -198,7 +198,7 @@ export const FlightSearch: React.FC = () => {
 
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label" htmlFor="filter-airline">
-              Aerolínea
+              Aerolinea
             </label>
             <input
               id="filter-airline"
@@ -220,9 +220,9 @@ export const FlightSearch: React.FC = () => {
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <option value="departure_asc">🕒 Horario de salida (Más temprano)</option>
-              <option value="price_asc">💵 Tarifa: Menor a Mayor costo</option>
-              <option value="price_desc">💎 Tarifa: Mayor a Menor costo</option>
+              <option value="departure_asc">Horario de salida (Mas temprano)</option>
+              <option value="price_asc">Tarifa: Menor a Mayor costo</option>
+              <option value="price_desc">Tarifa: Mayor a Menor costo</option>
             </select>
           </div>
         </div>
@@ -241,7 +241,7 @@ export const FlightSearch: React.FC = () => {
 
           <button id="filter-submit-btn" type="submit" className="btn-primary">
             <Filter size={18} />
-            Aplicar Filtros de Búsqueda
+            Aplicar Filtros de Busqueda
           </button>
         </div>
       </form>
@@ -270,7 +270,7 @@ export const FlightSearch: React.FC = () => {
             <Plane size={48} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
             <h3 style={{ fontSize: '1.1rem', marginBottom: '6px' }}>No se encontraron vuelos con esos filtros</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              Intenta buscar con otros orígenes, destinos o borra los filtros.
+              Intenta buscar con otros origenes, destinos o borra los filtros.
             </p>
           </div>
         ) : (
@@ -306,7 +306,7 @@ export const FlightSearch: React.FC = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {flight.aircraftModel} • {flight.availableSeats} asientos disp.
+                      {flight.aircraftModel} - {flight.availableSeats} asientos disp.
                     </div>
                   </div>
 

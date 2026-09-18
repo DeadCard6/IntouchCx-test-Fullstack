@@ -6,7 +6,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.error('💥 Unhandled Error:', err);
+  console.error('[ERROR] Unhandled Error:', err);
 
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Error interno del servidor';
