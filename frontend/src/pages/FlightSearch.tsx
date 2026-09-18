@@ -56,9 +56,9 @@ export const FlightSearch: React.FC = () => {
     setError(null);
     try {
       const params: Record<string, string> = {};
-      if (origin) params.origin = origin;
-      if (destination) params.destination = destination;
-      if (airline) params.airline = airline;
+      if (origin) params.origin = origin.trim();
+      if (destination) params.destination = destination.trim();
+      if (airline) params.airline = airline.trim();
       if (onlyDirect) params.onlyDirect = 'true';
       if (sortBy) params.sortBy = sortBy;
 
@@ -78,9 +78,9 @@ export const FlightSearch: React.FC = () => {
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newParams: Record<string, string> = {};
-    if (origin) newParams.origin = origin;
-    if (destination) newParams.destination = destination;
-    if (airline) newParams.airline = airline;
+    if (origin.trim()) newParams.origin = origin.trim();
+    if (destination.trim()) newParams.destination = destination.trim();
+    if (airline.trim()) newParams.airline = airline.trim();
     if (onlyDirect) newParams.onlyDirect = 'true';
     if (sortBy) newParams.sortBy = sortBy;
     setSearchParams(newParams);
@@ -160,11 +160,19 @@ export const FlightSearch: React.FC = () => {
         </button>
         <button
           type="button"
-          onClick={() => handleQuickRoute('MDE', 'BOG')}
+          onClick={() => handleQuickRoute('CLO', 'CTG')}
           className="btn-secondary"
           style={{ fontSize: '0.75rem', padding: '4px 10px' }}
         >
-          Medellin a Bogota
+          Cali a Cartagena
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('MDE', 'BAQ')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Medellin a Barranquilla
         </button>
         <button
           type="button"
@@ -173,14 +181,6 @@ export const FlightSearch: React.FC = () => {
           style={{ fontSize: '0.75rem', padding: '4px 10px' }}
         >
           Bogota a Cartagena
-        </button>
-        <button
-          type="button"
-          onClick={() => handleQuickRoute('BOG', 'CLO')}
-          className="btn-secondary"
-          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
-        >
-          Bogota a Cali
         </button>
         <button
           type="button"
@@ -279,7 +279,7 @@ export const FlightSearch: React.FC = () => {
               type="text"
               list="city-options"
               className="form-input"
-              placeholder="Ej: Bogota, Medellin, BOG..."
+              placeholder="Ej: Cali, Medellin, Bogota..."
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
             />
@@ -294,7 +294,7 @@ export const FlightSearch: React.FC = () => {
               type="text"
               list="city-options"
               className="form-input"
-              placeholder="Ej: Medellin, Cartagena, CTG..."
+              placeholder="Ej: Cartagena, Barranquilla, Cali..."
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
             />

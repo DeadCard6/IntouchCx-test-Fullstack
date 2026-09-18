@@ -27,14 +27,39 @@ describe('Flight Queries, Schedules & Tariffs API (R1, R5, R6)', () => {
     expect(firstFlight).toHaveProperty('availableSeats');
   });
 
-  it('GET /api/flights with origin and destination filter', async () => {
+  it('GET /api/flights with code filter (BOG to MDE)', async () => {
     const res = await request(app).get('/api/flights?origin=BOG&destination=MDE');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
     res.body.data.forEach((flight: any) => {
       expect(flight.origin).toBe('BOG');
       expect(flight.destination).toBe('MDE');
+    });
+  });
+
+  it('GET /api/flights with full city names (Cali to Cartagena)', async () => {
+    const res = await request(app).get('/api/flights?origin=Cali&destination=Cartagena');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+    res.body.data.forEach((flight: any) => {
+      expect(flight.origin).toBe('CLO');
+      expect(flight.destination).toBe('CTG');
+    });
+  });
+
+  it('GET /api/flights with parenthesized names (Medellin (MDE) to Barranquilla (BAQ))', async () => {
+    const res = await request(app).get('/api/flights?origin=Medellin%20(MDE)&destination=Barranquilla%20(BAQ)');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+    res.body.data.forEach((flight: any) => {
+      expect(flight.origin).toBe('MDE');
+      expect(flight.destination).toBe('BAQ');
     });
   });
 

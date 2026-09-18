@@ -43,17 +43,36 @@ const CITY_CODE_MAP: Record<string, string> = {
   MAD: 'MAD',
 };
 
-function normalizeCityOrCode(input?: string): string | undefined {
+export function normalizeCityOrCode(input?: string): string | undefined {
   if (!input || !input.trim()) return undefined;
-  
-  // Strip accents (e.g. Bogotá -> BOGOTA, Medellín -> MEDELLIN)
-  const normalized = input
-    .trim()
+
+  const rawTrimmed = input.trim();
+
+  // 1. Extract airport code if enclosed in parentheses: e.g. "Cali (CLO)" -> "CLO"
+  const parenthesizedMatch = rawTrimmed.match(/\(([A-Za-z]{3})\)/);
+  if (parenthesizedMatch) {
+    return parenthesizedMatch[1].toUpperCase();
+  }
+
+  // 2. Strip accents and normalize
+  const normalized = rawTrimmed
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toUpperCase();
 
-  return CITY_CODE_MAP[normalized] || normalized;
+  // 3. Direct dictionary match
+  if (CITY_CODE_MAP[normalized]) {
+    return CITY_CODE_MAP[normalized];
+  }
+
+  // 4. Substring / partial search across city names
+  for (const [key, code] of Object.entries(CITY_CODE_MAP)) {
+    if (normalized.includes(key)) {
+      return code;
+    }
+  }
+
+  return normalized;
 }
 
 export class FlightRepository {
@@ -72,7 +91,6 @@ export class FlightRepository {
 
     if (filters.airline && filters.airline.trim()) {
       const air = filters.airline.trim();
-      // Match case-insensitive in SQLite
       where.airline = { contains: air };
     }
 
