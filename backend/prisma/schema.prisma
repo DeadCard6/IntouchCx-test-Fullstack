@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  fullName         String
+  phoneNumber      String?
+  savedCardNumber  String?
+  savedCardHolder  String?
+  savedCardExpiry  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  bookings         Booking[]
+}
+
+model Flight {
+  id             String             @id @default(uuid())
+  flightNumber   String             @unique
+  airline        String
+  origin         String
+  destination    String
+  departureTime  DateTime
+  arrivalTime    DateTime
+  price          Float
+  status         String             @default("ON_TIME") // ON_TIME, DELAYED, BOARDING, CANCELLED
+  isDirect       Boolean            @default(true)
+  stopsCount     Int                @default(0)
+  stopsInfo      String?            // e.g., "Escala en Medellín (MDE) de 1h"
+  availableSeats Int                @default(60)
+  totalSeats     Int                @default(60)
+  aircraftModel  String             @default("Airbus A320")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  passengers     BookingPassenger[]
+}
+
+model Booking {
+  id                String             @id @default(uuid())
+  pnr               String             @unique // 6-character booking reference
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status            String             @default("PENDING") // PENDING, CONFIRMED, CANCELLED, EXPIRED
+  totalAmount       Float
+  expiresAt         DateTime           // 15-minute booking hold
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  passengers        BookingPassenger[]
+  paymentSimulation PaymentSimulation?
+}
+
+model BookingPassenger {
+  id             String   @id @default(uuid())
+  bookingId      String
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  flightId       String
+  flight         Flight   @relation(fields: [flightId], references: [id])
+  fullName       String
+  documentNumber String
+  seatNumber     String?
+  seatClass      String   @default("ECONOMY") // ECONOMY, BUSINESS, FIRST
+  createdAt      DateTime @default(now())
+}
+
+model PaymentSimulation {
+  id             String   @id @default(uuid())
+  bookingId      String   @unique
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  transactionId  String   @unique
+  cardLast4      String
+  cardHolder     String
+  amount         Float
+  deliveryMethod String   @default("EMAIL") // EMAIL, AIRPORT_COUNTER
+  status         String   @default("COMPLETED")
+  createdAt      DateTime @default(now())
+}
