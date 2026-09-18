@@ -5,10 +5,29 @@ import {
   Clock,
   ArrowRight,
   Filter,
+  RotateCcw,
 } from 'lucide-react';
 import { ApiService } from '../services/api.js';
 import { Flight } from '../types/index.js';
 import { useAuth } from '../context/AuthContext.js';
+
+const POPULAR_CITIES = [
+  { code: 'BOG', name: 'Bogota (BOG)' },
+  { code: 'MDE', name: 'Medellin (MDE)' },
+  { code: 'CLO', name: 'Cali (CLO)' },
+  { code: 'CTG', name: 'Cartagena (CTG)' },
+  { code: 'BAQ', name: 'Barranquilla (BAQ)' },
+  { code: 'SMR', name: 'Santa Marta (SMR)' },
+  { code: 'ADZ', name: 'San Andres Isla (ADZ)' },
+  { code: 'BGA', name: 'Bucaramanga (BGA)' },
+  { code: 'PEI', name: 'Pereira (PEI)' },
+  { code: 'CUC', name: 'Cucuta (CUC)' },
+  { code: 'LET', name: 'Leticia (LET)' },
+  { code: 'MTR', name: 'Monteria (MTR)' },
+  { code: 'PSO', name: 'Pasto (PSO)' },
+  { code: 'VUP', name: 'Valledupar (VUP)' },
+  { code: 'NVA', name: 'Neiva (NVA)' },
+];
 
 export const FlightSearch: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,6 +87,29 @@ export const FlightSearch: React.FC = () => {
     fetchFlights();
   };
 
+  const handleResetFilters = () => {
+    setOrigin('');
+    setDestination('');
+    setAirline('');
+    setOnlyDirect(false);
+    setSortBy('departure_asc');
+    setSearchParams({});
+    setTimeout(() => {
+      ApiService.searchFlights({ sortBy: 'departure_asc' }).then((res) => setFlights(res.data));
+    }, 50);
+  };
+
+  const handleQuickRoute = (origCode: string, destCode: string) => {
+    setOrigin(origCode);
+    setDestination(destCode);
+    const newParams: Record<string, string> = { origin: origCode, destination: destCode };
+    if (airline) newParams.airline = airline;
+    if (onlyDirect) newParams.onlyDirect = 'true';
+    if (sortBy) newParams.sortBy = sortBy;
+    setSearchParams(newParams);
+    ApiService.searchFlights(newParams).then((res) => setFlights(res.data));
+  };
+
   const handleSearchStatus = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!statusSearchQuery.trim()) return;
@@ -96,13 +138,58 @@ export const FlightSearch: React.FC = () => {
   return (
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }}>
       {/* Search Header */}
-      <div style={{ marginBottom: '28px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '6px' }}>
           Consulta y Reserva de Vuelos
         </h1>
         <p style={{ color: 'var(--text-secondary)' }}>
-          Horarios en tiempo real, comparacion de tarifas y estado operativo de aeronaves
+          Horarios en tiempo real, comparacion de tarifas y disponibilidad nacional
         </p>
+      </div>
+
+      {/* Quick Route Shortcuts */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
+        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Rutas Populares:</span>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('BOG', 'MDE')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Bogota a Medellin
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('MDE', 'BOG')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Medellin a Bogota
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('BOG', 'CTG')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Bogota a Cartagena
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('BOG', 'CLO')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Bogota a Cali
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickRoute('MDE', 'ADZ')}
+          className="btn-secondary"
+          style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+        >
+          Medellin a San Andres
+        </button>
       </div>
 
       {/* Flight Status Lookup Card (R6) */}
@@ -124,7 +211,7 @@ export const FlightSearch: React.FC = () => {
             id="status-flight-number-input"
             type="text"
             className="form-input"
-            placeholder="Ej: AV-100, LA-101, WN-102..."
+            placeholder="Ej: AV-200, LA-202, WN-204, CL-206, SA-208..."
             value={statusSearchQuery}
             onChange={(e) => setStatusSearchQuery(e.target.value)}
             style={{ flex: '1', minWidth: '220px' }}
@@ -165,6 +252,21 @@ export const FlightSearch: React.FC = () => {
         )}
       </div>
 
+      {/* Datalists for Autocomplete */}
+      <datalist id="city-options">
+        {POPULAR_CITIES.map((c) => (
+          <option key={c.code} value={c.name} />
+        ))}
+      </datalist>
+
+      <datalist id="airline-options">
+        <option value="Avianca" />
+        <option value="LATAM" />
+        <option value="Wingo" />
+        <option value="Clic Air" />
+        <option value="Satena" />
+      </datalist>
+
       {/* Main Filter Panel (R1, R5) */}
       <form onSubmit={handleFilterSubmit} className="glass-panel" style={{ padding: '24px', marginBottom: '32px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
@@ -175,8 +277,9 @@ export const FlightSearch: React.FC = () => {
             <input
               id="filter-origin"
               type="text"
+              list="city-options"
               className="form-input"
-              placeholder="Ej: BOG, MDE..."
+              placeholder="Ej: Bogota, Medellin, BOG..."
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
             />
@@ -189,8 +292,9 @@ export const FlightSearch: React.FC = () => {
             <input
               id="filter-destination"
               type="text"
+              list="city-options"
               className="form-input"
-              placeholder="Ej: CTG, CLO, MIA, MAD..."
+              placeholder="Ej: Medellin, Cartagena, CTG..."
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
             />
@@ -203,8 +307,9 @@ export const FlightSearch: React.FC = () => {
             <input
               id="filter-airline"
               type="text"
+              list="airline-options"
               className="form-input"
-              placeholder="Ej: Avianca, LATAM, Wingo..."
+              placeholder="Todas o ej: LATAM, Avianca..."
               value={airline}
               onChange={(e) => setAirline(e.target.value)}
             />
@@ -239,10 +344,15 @@ export const FlightSearch: React.FC = () => {
             Solo vuelos directos (sin escalas)
           </label>
 
-          <button id="filter-submit-btn" type="submit" className="btn-primary">
-            <Filter size={18} />
-            Aplicar Filtros de Busqueda
-          </button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button type="button" onClick={handleResetFilters} className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.85rem' }}>
+              <RotateCcw size={15} /> Limpiar Filtros
+            </button>
+            <button id="filter-submit-btn" type="submit" className="btn-primary">
+              <Filter size={18} />
+              Buscar Vuelos
+            </button>
+          </div>
         </div>
       </form>
 
@@ -269,13 +379,16 @@ export const FlightSearch: React.FC = () => {
           <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>
             <Plane size={48} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
             <h3 style={{ fontSize: '1.1rem', marginBottom: '6px' }}>No se encontraron vuelos con esos filtros</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              Intenta buscar con otros origenes, destinos o borra los filtros.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '16px' }}>
+              Intenta buscar con otros origenes o restablece los filtros.
             </p>
+            <button onClick={handleResetFilters} className="btn-secondary">
+              Ver todos los vuelos
+            </button>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {flights.map((flight) => {
+            {flights.slice(0, 100).map((flight) => {
               const depDate = new Date(flight.departureTime);
               const arrDate = new Date(flight.arrivalTime);
               const durationMins = Math.round((arrDate.getTime() - depDate.getTime()) / (1000 * 60));

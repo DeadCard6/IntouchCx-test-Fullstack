@@ -1,20 +1,79 @@
 import { prisma } from '../config/database.js';
 import { FlightQueryFilters } from '../types/index.js';
 
+const CITY_CODE_MAP: Record<string, string> = {
+  BOGOTA: 'BOG',
+  BOG: 'BOG',
+  MEDELLIN: 'MDE',
+  RIONEGRO: 'MDE',
+  MDE: 'MDE',
+  CALI: 'CLO',
+  CLO: 'CLO',
+  CARTAGENA: 'CTG',
+  CTG: 'CTG',
+  BARRANQUILLA: 'BAQ',
+  BAQ: 'BAQ',
+  SANTAMARTA: 'SMR',
+  'SANTA MARTA': 'SMR',
+  SMR: 'SMR',
+  BUCARAMANGA: 'BGA',
+  BGA: 'BGA',
+  PEREIRA: 'PEI',
+  PEI: 'PEI',
+  CUCUTA: 'CUC',
+  CUC: 'CUC',
+  SANANDRES: 'ADZ',
+  'SAN ANDRES': 'ADZ',
+  ADZ: 'ADZ',
+  LETICIA: 'LET',
+  LET: 'LET',
+  MONTERIA: 'MTR',
+  MTR: 'MTR',
+  ARMENIA: 'AXM',
+  AXM: 'AXM',
+  PASTO: 'PSO',
+  PSO: 'PSO',
+  VALLEDUPAR: 'VUP',
+  VUP: 'VUP',
+  NEIVA: 'NVA',
+  NVA: 'NVA',
+  MIAMI: 'MIA',
+  MIA: 'MIA',
+  MADRID: 'MAD',
+  MAD: 'MAD',
+};
+
+function normalizeCityOrCode(input?: string): string | undefined {
+  if (!input || !input.trim()) return undefined;
+  
+  // Strip accents (e.g. Bogotá -> BOGOTA, Medellín -> MEDELLIN)
+  const normalized = input
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase();
+
+  return CITY_CODE_MAP[normalized] || normalized;
+}
+
 export class FlightRepository {
   async findAll(filters: FlightQueryFilters) {
     const where: any = {};
 
-    if (filters.origin) {
-      where.origin = filters.origin.toUpperCase().trim();
+    const normalizedOrigin = normalizeCityOrCode(filters.origin);
+    if (normalizedOrigin) {
+      where.origin = normalizedOrigin;
     }
 
-    if (filters.destination) {
-      where.destination = filters.destination.toUpperCase().trim();
+    const normalizedDest = normalizeCityOrCode(filters.destination);
+    if (normalizedDest) {
+      where.destination = normalizedDest;
     }
 
-    if (filters.airline) {
-      where.airline = { contains: filters.airline };
+    if (filters.airline && filters.airline.trim()) {
+      const air = filters.airline.trim();
+      // Match case-insensitive in SQLite
+      where.airline = { contains: air };
     }
 
     if (filters.onlyDirect !== undefined) {
@@ -54,7 +113,7 @@ export class FlightRepository {
 
   async findByFlightNumber(flightNumber: string) {
     return prisma.flight.findUnique({
-      where: { flightNumber },
+      where: { flightNumber: flightNumber.trim().toUpperCase() },
     });
   }
 
